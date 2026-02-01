@@ -357,10 +357,10 @@ export default function App() {
                 key={time}
                 className={`bg-gradient-to-br ${
                   idx === 0
-                    ? 'from-blue-600 to-blue-700'
+                    ? 'from-yellow-600 to-yellow-700'
                     : idx === 1
-                    ? 'from-red-600 to-red-700'
-                    : 'from-amber-600 to-amber-700'
+                    ? 'from-blue-600 to-blue-700'
+                    : 'from-red-600 to-red-700'
                 } rounded-xl p-4 text-center shadow-lg`}
               >
                 <div className="text-2xl font-bold">{timesCounts[time]}/6</div>
