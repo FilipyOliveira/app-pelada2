@@ -736,20 +736,14 @@ export default function App() {
               </>
             )}
 
-            {((partidaAtual?.status === 'Em andamento' &&
-              !partidaEmAndamento) ||
-              tempoRestante === 0 ||
-              partidaAtual?.golsA >= 2 ||
-              partidaAtual?.golsB >= 2) &&
-              !mostrarDesempate && (
-                <button
-                  onClick={() => finalizarPartida()}
-                  className="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl text-xl font-bold flex items-center justify-center gap-3 transition-all"
-                >
-                  <Check className="w-6 h-6" />
-                  FINALIZAR PARTIDA
-                </button>
-              )}
+
+            <button
+              onClick={() => finalizarPartida()}
+              className="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl text-xl font-bold flex items-center justify-center gap-3 transition-all"
+            >
+              <Check className="w-6 h-6" />
+              FINALIZAR PARTIDA
+            </button>
           </div>
         </div>
 
