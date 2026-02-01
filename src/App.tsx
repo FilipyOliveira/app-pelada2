@@ -214,52 +214,58 @@ export default function App() {
       Math.random() < 0.5 ? partidaAtual.timeA : partidaAtual.timeB;
     const perdedor =
       vencedor === partidaAtual.timeA ? partidaAtual.timeB : partidaAtual.timeA;
-    processarFimPartida(vencedor, perdedor);
+    processarFimPartida(vencedor, perdedor, true);
+    ;
   };
 
-  const processarFimPartida = (vencedor, perdedor) => {
-    const partidaFinalizada = {
-      ...partidaAtual,
-      status: 'Finalizada',
-      horarioFim: new Date().toISOString(),
-      vencedor,
-      perdedor,
-      resultado: vencedor ? 'Vitória' : 'Empate',
-    };
-
-    setPartidas([...partidas, partidaFinalizada]);
-
-    const novaPontuacao = { ...pontuacao };
-    if (vencedor) {
-      novaPontuacao[vencedor] += 3;
-    } else {
-      novaPontuacao[partidaAtual.timeA] += 1;
-      novaPontuacao[partidaAtual.timeB] += 1;
-    }
-    setPontuacao(novaPontuacao);
-
-    const timesDisponiveis = ['Time 1', 'Time 2', 'Time 3'];
-    const timeAguardando = timesDisponiveis.find(
-      (t) => t !== partidaAtual.timeA && t !== partidaAtual.timeB
-    );
-
-    const novaPartida = {
-      id: Date.now(),
-      timeA: vencedor,
-      timeB: timeAguardando,
-      golsA: 0,
-      golsB: 0,
-      status: 'Aguardando',
-      horarioInicio: null,
-      horarioFim: null,
-    };
-
-    setPartidaAtual(novaPartida);
-    setPartidaEmAndamento(false);
-    setPartidaPausada(false);
-    setTempoRestante(420);
-    setMostrarDesempate(false);
+  const processarFimPartida = (vencedor, perdedor, ehEmpate = false) => {
+  const partidaFinalizada = {
+    ...partidaAtual,
+    status: 'Finalizada',
+    horarioFim: new Date().toISOString(),
+    vencedor,
+    perdedor,
+    resultado: ehEmpate ? 'Empate' : 'Vitória',
   };
+
+  setPartidas([...partidas, partidaFinalizada]);
+
+  const novaPontuacao = { ...pontuacao };
+
+  if (ehEmpate) {
+    // Empate: ambos ganham 1 ponto
+    novaPontuacao[partidaAtual.timeA] += 1;
+    novaPontuacao[partidaAtual.timeB] += 1;
+  } else {
+    // Vitória normal
+    novaPontuacao[vencedor] += 3;
+  }
+
+  setPontuacao(novaPontuacao);
+
+  const timesDisponiveis = ['Time 1', 'Time 2', 'Time 3'];
+  const timeAguardando = timesDisponiveis.find(
+    (t) => t !== partidaAtual.timeA && t !== partidaAtual.timeB
+  );
+
+  const novaPartida = {
+    id: Date.now(),
+    timeA: vencedor,
+    timeB: timeAguardando,
+    golsA: 0,
+    golsB: 0,
+    status: 'Aguardando',
+    horarioInicio: null,
+    horarioFim: null,
+  };
+
+  setPartidaAtual(novaPartida);
+  setPartidaEmAndamento(false);
+  setPartidaPausada(false);
+  setTempoRestante(420);
+  setMostrarDesempate(false);
+};
+
 
   const finalizarTorneio = () => {
     if (window.confirm('Tem certeza que deseja finalizar o torneio?')) {
@@ -847,7 +853,10 @@ export default function App() {
                 SORTEAR VENCEDOR
               </button>
               <button
-                onClick={() => finalizarPartida(partidaAtual.timeA)}
+                onClick={() =>
+                  processarFimPartida(partidaAtual.timeA, partidaAtual.timeB, true)
+                }
+
                 className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
                   partidaAtual.timeA === 'Time 1'
                     ? 'bg-blue-600 hover:bg-blue-700'
@@ -859,7 +868,10 @@ export default function App() {
                 {partidaAtual.timeA} VENCE
               </button>
               <button
-                onClick={() => finalizarPartida(partidaAtual.timeB)}
+                onClick={() =>
+                  processarFimPartida(partidaAtual.timeB, partidaAtual.timeA, true)
+                }
+
                 className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
                   partidaAtual.timeB === 'Time 1'
                     ? 'bg-blue-600 hover:bg-blue-700'
